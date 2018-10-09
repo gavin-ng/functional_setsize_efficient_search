@@ -26,7 +26,7 @@ warning off MATLAB:DeprecatedLogicalAPI
 subject_id = input('Enter Subject Number:    ');
 
 KbName('UnifyKeyNames');
-% HideCursor
+HideCursor
 % comment out the previous line to run on Macs
 global Xcentre;
 global Ycentre;
@@ -88,14 +88,14 @@ rest_time=30;   %rest time between blocks
 
 % % speed run
 %
-% refresh_rate=85;
-% bit=(1/refresh_rate)/2;
-% resp_time=0.1;
-% fix_time=0.1;
-% onset_delay = 0.1;
-% disp_time=0.1;
-% inter_trial=0.1;
-% rest_time=30;   %rest time between blocks
+refresh_rate=85;
+bit=(1/refresh_rate)/2;
+resp_time=0.1;
+fix_time=0.1;
+onset_delay = 0.1;
+disp_time=0.1;
+inter_trial=0.1;
+rest_time=30;   %rest time between blocks
 
 
 exit_flag = 0;
@@ -141,13 +141,13 @@ bird_height = 30;
 % maximum stimuli
 % based on the grid
 
-xcells = 8;
-ycells = 8;
+xcells = 10;
+ycells = 10;
 
 jitterx = 12;
 jittery = 12;
 
-max_birds = (xcells*ycells)/2 - 8;
+max_birds = (xcells*ycells)/2 - xcells;
 % max_fishes = (xcells*ycells)/2;
 max_stim = xcells * ycells;
 
@@ -198,10 +198,10 @@ for i = 1:trials_per_block_per_cell
                 master_table(trial).bird_setsize = bird_ss(b);
                 master_table(trial).fish_setsize = fish_ss(f);
                 master_table(trial).block = block;
-                tloc = randsample(max_birds+17 : max_stim, 1);
+                tloc = randsample(max_birds+21 : max_stim, 1);
                 master_table(trial).tloc = tloc;
                 master_table(trial).bird_locs = randsample(1:max_birds, bird_ss(b));
-                master_table(trial).fish_locs = randsample(setdiff(max_birds+17 : max_stim, tloc), fish_ss(f)); %exclude tloc
+                master_table(trial).fish_locs = randsample(setdiff(max_birds+21 : max_stim, tloc), fish_ss(f)); %exclude tloc
                 master_table(trial).bird_ids = round(rand(bird_ss(b)));
                 master_table(trial).fish_ids = round(rand(fish_ss(f)));
                 master_table(trial).bird_rotations = (15).*rand(bird_ss(b),1) + 15;
@@ -239,10 +239,12 @@ inst_3 = ['Please press the RIGHT arrow key if the fish is facing right \n\n\n\n
     'Press the RIGHT arrow key to continue'];
 
 practice_inst = ['We will begin with some practice trials.\n\n'...
+    'Please try to respond as quickly and as accurately as possible \n\n'...
     'Get ready!'];
 
 start_inst = ['Now the test phase will begin. \n\n'...
-    'Your response data will be recorded for our analysis. \n\n\n\n'...
+    'Your response data will be recorded for our analysis. \n\n'...
+    'Please try to respond as quickly and as accurately as possible \n\n\n\n'...
     'Hit the SPACEBAR to begin.'];
 
 rest_inst = ['Please take a short break. Rest your eyes and hands for a bit. \n\n' ...
@@ -354,10 +356,10 @@ for b = 1:length(bird_ss)
         practice_table(trial).bird_setsize = bird_ss(b);
         practice_table(trial).fish_setsize = fish_ss(f);
         practice_table(trial).block = block;
-        tloc = randsample(max_birds+17 : max_stim, 1);
+        tloc = randsample(max_birds+21 : max_stim, 1);
         practice_table(trial).tloc = tloc;
         practice_table(trial).bird_locs = randsample(1:max_birds, bird_ss(b));
-        practice_table(trial).fish_locs = randsample(setdiff(max_birds+17 : max_stim, tloc), fish_ss(f)); %exclude tloc
+        practice_table(trial).fish_locs = randsample(setdiff(max_birds+21 : max_stim, tloc), fish_ss(f)); %exclude tloc
         practice_table(trial).bird_ids = round(rand(bird_ss(b)));
         practice_table(trial).fish_ids = round(rand(fish_ss(f)));
         practice_table(trial).bird_rotations = (15).*rand(bird_ss(b),1) + 15;
@@ -691,7 +693,7 @@ for block = 1:total_blocks
         
         im=Screen('GetImage',window, rect); %% Gavin--here is the start of the relevant code
         % f=[pwd '\' int2str(subject_id) '\' int2str(trial) '.png'];
-        f = [pwd '\' int2str(trial) '.png'];
+        f = [pwd '\' int2str(subject_id) int2str(trial) '.png'];
         imwrite(im,f,'PNG'); % JPEG saved... not sure if JPEG is the best for you or not--you could probably save as a .gif or something else that might keep the fidelity high
         %
         % response detection
@@ -834,7 +836,7 @@ data_table_out = [data_vars data_table_1];
 
 % data_table_out = sortrows(data_table_out, 2);
 %
-filename = ['FSS_', num2str(subject_id), '.csv'];
+filename = ['FSS_pilot', num2str(subject_id), '.csv'];
 writetable(data_table_out, filename, 'Delimiter', ',');
 
 
