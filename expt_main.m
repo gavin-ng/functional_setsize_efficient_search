@@ -1,8 +1,8 @@
-Screen('Preference', 'SkipSyncTests', 1 );
+% Screen('Preference', 'SkipSyncTests', 1 );
 
-%%  Contextual cueing in efficient parallel search
+%%  Functional set size in efficient search
 %   Created by Gavin Ng
-%   Last edit: 2/8/18
+%   Last edit: 10/9/18
 %
 %
 %
@@ -25,6 +25,8 @@ warning off MATLAB:DeprecatedLogicalAPI
 
 subject_id = input('Enter Subject Number:    ');
 
+DemographicQuestions(subject_id);
+
 KbName('UnifyKeyNames');
 HideCursor
 % comment out the previous line to run on Macs
@@ -35,7 +37,7 @@ global cy;
 
 
 % Output file
-fid = fopen([num2str(subject_id) '.out'], 'a');
+fid = fopen([num2str(subject_id) '_pilot' '.out'], 'a');
 
 
 %% Reserving memory space for large variables %%
@@ -88,14 +90,14 @@ rest_time=30;   %rest time between blocks
 
 % % speed run
 %
-refresh_rate=85;
-bit=(1/refresh_rate)/2;
-resp_time=0.1;
-fix_time=0.1;
-onset_delay = 0.1;
-disp_time=0.1;
-inter_trial=0.1;
-rest_time=30;   %rest time between blocks
+% refresh_rate=85;
+% bit=(1/refresh_rate)/2;
+% resp_time=0.1;
+% fix_time=0.1;
+% onset_delay = 0.1;
+% disp_time=0.1;
+% inter_trial=0.1;
+% rest_time=30;   %rest time between blocks
 
 
 exit_flag = 0;
@@ -161,13 +163,14 @@ max_stim = xcells * ycells;
 bird_ss = [0, 4, 8, 16];
 fish_ss = [0, 4, 8, 16];
 
-total_trials = 640;
+total_trials = 720;
+ib_trials = 2;
 total_practice_trials = length(bird_ss) * length(fish_ss);
-total_blocks = 8;
+total_blocks = 9;
 trials_per_block_per_cell = total_trials / total_blocks / (length(bird_ss) * length(fish_ss));
 
 design = repmat(struct('block', 0, 'tid', 0, 'tloc', 0, 'fish_setsize', 0,...
-    'bird_setsize', 0, 'fish_locs', 0, 'bird_locs', 0, 'fish_ids', 0, 'bird_ids', 0, 'fish_rotations', 0, 'bird_rotations', 0), 1, total_trials);
+    'bird_setsize', 0, 'fish_locs', 0, 'bird_locs', 0, 'fish_ids', 0, 'bird_ids', 0, 'fish_rotations', 0, 'bird_rotations', 0), 1, total_trials + ib_trials);
 
 master_table = design;
 
@@ -175,13 +178,13 @@ master_table = design;
 %% Variables to store data %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-Trial = ones(total_trials, 1) * (-1);
-T_ID = ones(total_trials, 1) * (-1);
-Resp = ones(total_trials, 1) * (-1);
-Error = ones(total_trials, 1) * (-1);
-RT = ones(total_trials, 1) * (-1);
-Fix_onset = ones(total_trials, 1) * (-1);
-Disp_onset = ones(total_trials, 1) * (-1);
+Trial = ones(total_trials + ib_trials, 1) * (-1);
+T_ID = ones(total_trials + ib_trials, 1) * (-1);
+Resp = ones(total_trials + ib_trials, 1) * (-1);
+Error = ones(total_trials + ib_trials, 1) * (-1);
+RT = ones(total_trials + ib_trials, 1) * (-1);
+Fix_onset = ones(total_trials + ib_trials, 1) * (-1);
+Disp_onset = ones(total_trials + ib_trials, 1) * (-1);
 
 % create master data table
 count = 0;
@@ -219,6 +222,36 @@ for i = 1:trials_per_block_per_cell
     end
     
 end
+% 
+% % create trials for IB
+% for t = 1:ib_trials
+%     
+%     for b = 1:bird_ss(3)
+%         for f = 1:fish_ss(3)
+%             
+%             master_table(total_trials + t).bird_setsize = bird_ss(3);
+%             master_table(total_trials + t).fish_setsize = fish_ss(3);
+%             master_table(total_trials + t).block = block;
+%             tloc = randsample(max_birds+21 : max_stim, 1);
+%             ib_stim = randsample(1:max_birds, 1); % randomly select one bird to become a fish
+%             master_table(total_trials + t).tloc = tloc;
+%             master_table(total_trials + t).bird_locs = randsample(setdiff(1:max_birds, ib_stim), bird_ss(3));
+%             master_table(total_trials + t).fish_locs = randsample(setdiff(max_birds+21 : max_stim, tloc), fish_ss(3)); %exclude tloc
+%             master_table(total_trials + t).bird_ids = round(rand(1, bird_ss(3)));
+%             master_table(total_trials + t).fish_ids = round(rand(1, fish_ss(3)));
+%             master_table(total_trials + t).bird_rotations = (15).*rand(bird_ss(3),1) + 15;
+%             master_table(total_trials + t).fish_rotations = (15).*rand(fish_ss(3),1) + 15;
+%             master_table(total_trials + 2).ib = ib_stim;
+%             
+%             
+%         end
+%         
+%     end
+%     
+%     
+%     
+% end
+
 
 
 
@@ -228,7 +261,7 @@ end
 
 inst_1 = ['Welcome! \n\n'...
     'This is a visual search experiment. \n\n'...
-    'You will be searching for a orange colored fish among some other fishes and birds \n\n'...
+    'You will be searching for an orange colored fish among some other fishes and birds \n\n'...
     'Your task is to decide which direction the orange fish is facing. \n\n'...
     'You will see examples next. \n\n'];
 
@@ -686,6 +719,7 @@ for block = 1:total_blocks
         
         
         
+        
         vbl=Screen('Flip',window,vbl+onset_delay-bit);
         t0 = vbl;  % stimuli onset time
         Disp_onset(trial) = t0;
@@ -693,7 +727,7 @@ for block = 1:total_blocks
         
         im=Screen('GetImage',window, rect); %% Gavin--here is the start of the relevant code
         % f=[pwd '\' int2str(subject_id) '\' int2str(trial) '.png'];
-        f = [pwd '\' int2str(subject_id) int2str(trial) '.png'];
+        f = [pwd '\' int2str(subject_id) '_' int2str(trial) '.png'];
         imwrite(im,f,'PNG'); % JPEG saved... not sure if JPEG is the best for you or not--you could probably save as a .gif or something else that might keep the fidelity high
         %
         % response detection
@@ -776,6 +810,9 @@ for block = 1:total_blocks
     end
     
 end
+
+%% IB
+
 
 
 if exit_flag
