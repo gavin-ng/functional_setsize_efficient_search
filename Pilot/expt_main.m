@@ -25,7 +25,7 @@ warning off MATLAB:DeprecatedLogicalAPI
 
 subject_id = input('Enter Subject Number:    ');
 
-DemographicQuestions(subject_id);
+% DemographicQuestions(subject_id);
 
 KbName('UnifyKeyNames');
 HideCursor
@@ -150,7 +150,7 @@ jitterx = 12;
 jittery = 12;
 
 max_birds = (xcells*ycells)/2 - xcells;
-% max_fishes = (xcells*ycells)/2;
+% % max_fishes = (xcells*ycells)/2;
 max_stim = xcells * ycells;
 
 
@@ -160,8 +160,11 @@ max_stim = xcells * ycells;
 %% Experiment conditions %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-bird_ss = [0, 4, 8, 16];
-fish_ss = [0, 4, 8, 16];
+% bird_ss = [0, 4, 8, 16];
+% fish_ss = [0, 4, 8, 16];
+
+bird_ss = [40, 40, 40, 40];
+fish_ss = [39, 39, 39, 39];
 
 total_trials = 720;
 ib_trials = 2;
@@ -442,145 +445,145 @@ WaitSecs(2);
 % Start practice
 
 practice_table = struct2table(practice_table);
-
-for p = 1:total_practice_trials
-    iti = inter_trial + rand*0.2;
-    practice_table.tid(p) = round(rand(1));
-    
-    
-    % draw fixation
-    Screen('DrawLine',window,white,Xcentre-15,Ycentre,Xcentre+15,Ycentre,2);
-    Screen('DrawLine',window,white,Xcentre,Ycentre-15,Xcentre,Ycentre+15,2);
-    
-    % get the flip time
-    vbl = Screen('Flip',window,vbl+iti-bit);
-    vbl = Screen('Flip',window,vbl+fix_time-bit);
-    Screen('DrawTexture', window, bg);
-    
-    % draw target
-    
-    loc = practice_table.tloc(p);
-    %     griddy(loc);
-    grid(loc, xcells, ycells, jitterx, jittery, Xcentre, Ycentre);
-    tempx = cx;
-    tempy = cy;
-    
-    %     fish_x_l = cx + 30;
-    %     fish_x_r = cx + 90;
-    %     fish_y_u = cy + 15;
-    %     fish_y_d = cy + 45;
-    
-    fish_x_l = cx - (fish_width/2);
-    fish_x_r = cx + (fish_width/2);
-    fish_y_u = cy - (fish_height/2);
-    fish_y_d = cy + (fish_height/2);
-    
-    if practice_table.tid(p) == 0
-        Screen('DrawTexture', window, fish_t_l, [], [fish_x_l fish_y_u fish_x_r fish_y_d]);
-    else
-        Screen('DrawTexture', window, fish_t_r, [], [fish_x_l fish_y_u fish_x_r fish_y_d]);
-    end
-    
-    %% draw birds
-    for b = 1:practice_table.bird_setsize(p)
-        loc = practice_table.bird_locs{p}(b);
-        rotation = practice_table.bird_rotations{p}(b);
-        %         griddy(loc);
-        grid(loc, xcells, ycells, jitterx, jittery, Xcentre, Ycentre);
-        tempx = cx;
-        tempy = cy;
-        
-        bird_x_l = cx - (bird_width/2);
-        bird_x_r = cx + (bird_width/2);
-        bird_y_u = cy - (bird_height/2);
-        bird_y_d = cy + (bird_height/2);
-        
-        if practice_table.bird_ids{p}(b) == 0
-            Screen('DrawTexture', window, bird_l, [], [bird_x_l bird_y_u bird_x_r bird_y_d]);
-        else
-            Screen('DrawTexture', window, bird_r, [], [bird_x_l bird_y_u bird_x_r bird_y_d]);
-        end
-        
-    end
-    
-    % draw fishes
-    fishes_this_trial = practice_table.fish_locs(p);
-    for f = 1:practice_table.fish_setsize(p)
-        
-        loc = practice_table.fish_locs{p}(f);
-        rotation = practice_table.fish_rotations{p}(f);
-        %         griddy(loc);
-        grid(loc, xcells, ycells, jitterx, jittery, Xcentre, Ycentre);
-        
-        tempx = cx;
-        tempy = cy;
-        
-        fish_x_l = cx - (fish_width/2);
-        fish_x_r = cx + (fish_width/2);
-        fish_y_u = cy - (fish_height/2);
-        fish_y_d = cy + (fish_height/2);
-        
-        if practice_table.fish_ids{p}(f) == 0
-            Screen('DrawTexture', window, fish_d_l, [], [fish_x_l fish_y_u fish_x_r fish_y_d]);
-        else
-            Screen('DrawTexture', window, fish_d_r, [], [fish_x_l fish_y_u fish_x_r fish_y_d]);
-        end
-        
-    end
-    
-    
-    
-    vbl=Screen('Flip',window,vbl+onset_delay-bit);
-    t0 = vbl;  % stimuli onset time
-    
-    % response detection
-    flag = 0;
-    while flag == 0
-        [key, secs,keyCode]=KbCheck;
-        if keyCode(LeftKey)||keyCode(RightKey)||keyCode(escKey)
-            flag=1;
-            t1=GetSecs;
-        elseif (GetSecs-t0)> disp_time
-            flag=2;  % response time out
-        end
-    end
-    
-    vbl = Screen('Flip',window);
-    
-    if keyCode(escKey)
-        exit_flag = 1;
-    end
-    %
-    if exit_flag
-        break;
-    end
-    
-    
-    if flag == 1
-        if keyCode(LeftKey)
-            resp = 0;
-        elseif keyCode(RightKey)
-            resp = 1;
-        end
-        
-        if resp ~= practice_table.tid(p)
-            makeBeep(750, 0.25);
-        end
-        
-    elseif flag == 2
-        makeBeep(750,0.25);
-    end
-    
-    
-    
-    Screen('Flip',window);
-    
-    if exit_flag
-        break;
-    end
-    
-    
-end
+% 
+% for p = 1:total_practice_trials
+%     iti = inter_trial + rand*0.2;
+%     practice_table.tid(p) = round(rand(1));
+%     
+%     
+%     % draw fixation
+%     Screen('DrawLine',window,white,Xcentre-15,Ycentre,Xcentre+15,Ycentre,2);
+%     Screen('DrawLine',window,white,Xcentre,Ycentre-15,Xcentre,Ycentre+15,2);
+%     
+%     % get the flip time
+%     vbl = Screen('Flip',window,vbl+iti-bit);
+%     vbl = Screen('Flip',window,vbl+fix_time-bit);
+%     Screen('DrawTexture', window, bg);
+%     
+%     % draw target
+%     
+%     loc = practice_table.tloc(p);
+%     %     griddy(loc);
+%     grid(loc, xcells, ycells, jitterx, jittery, Xcentre, Ycentre);
+%     tempx = cx;
+%     tempy = cy;
+%     
+%     %     fish_x_l = cx + 30;
+%     %     fish_x_r = cx + 90;
+%     %     fish_y_u = cy + 15;
+%     %     fish_y_d = cy + 45;
+%     
+%     fish_x_l = cx - (fish_width/2);
+%     fish_x_r = cx + (fish_width/2);
+%     fish_y_u = cy - (fish_height/2);
+%     fish_y_d = cy + (fish_height/2);
+%     
+%     if practice_table.tid(p) == 0
+%         Screen('DrawTexture', window, fish_t_l, [], [fish_x_l fish_y_u fish_x_r fish_y_d]);
+%     else
+%         Screen('DrawTexture', window, fish_t_r, [], [fish_x_l fish_y_u fish_x_r fish_y_d]);
+%     end
+%     
+%     %% draw birds
+%     for b = 1:practice_table.bird_setsize(p)
+%         loc = practice_table.bird_locs{p}(b);
+%         rotation = practice_table.bird_rotations{p}(b);
+%         %         griddy(loc);
+%         grid(loc, xcells, ycells, jitterx, jittery, Xcentre, Ycentre);
+%         tempx = cx;
+%         tempy = cy;
+%         
+%         bird_x_l = cx - (bird_width/2);
+%         bird_x_r = cx + (bird_width/2);
+%         bird_y_u = cy - (bird_height/2);
+%         bird_y_d = cy + (bird_height/2);
+%         
+%         if practice_table.bird_ids{p}(b) == 0
+%             Screen('DrawTexture', window, bird_l, [], [bird_x_l bird_y_u bird_x_r bird_y_d]);
+%         else
+%             Screen('DrawTexture', window, bird_r, [], [bird_x_l bird_y_u bird_x_r bird_y_d]);
+%         end
+%         
+%     end
+%     
+%     % draw fishes
+%     fishes_this_trial = practice_table.fish_locs(p);
+%     for f = 1:practice_table.fish_setsize(p)
+%         
+%         loc = practice_table.fish_locs{p}(f);
+%         rotation = practice_table.fish_rotations{p}(f);
+%         %         griddy(loc);
+%         grid(loc, xcells, ycells, jitterx, jittery, Xcentre, Ycentre);
+%         
+%         tempx = cx;
+%         tempy = cy;
+%         
+%         fish_x_l = cx - (fish_width/2);
+%         fish_x_r = cx + (fish_width/2);
+%         fish_y_u = cy - (fish_height/2);
+%         fish_y_d = cy + (fish_height/2);
+%         
+%         if practice_table.fish_ids{p}(f) == 0
+%             Screen('DrawTexture', window, fish_d_l, [], [fish_x_l fish_y_u fish_x_r fish_y_d]);
+%         else
+%             Screen('DrawTexture', window, fish_d_r, [], [fish_x_l fish_y_u fish_x_r fish_y_d]);
+%         end
+%         
+%     end
+%     
+%     
+%     
+%     vbl=Screen('Flip',window,vbl+onset_delay-bit);
+%     t0 = vbl;  % stimuli onset time
+%     
+%     % response detection
+%     flag = 0;
+%     while flag == 0
+%         [key, secs,keyCode]=KbCheck;
+%         if keyCode(LeftKey)||keyCode(RightKey)||keyCode(escKey)
+%             flag=1;
+%             t1=GetSecs;
+%         elseif (GetSecs-t0)> disp_time
+%             flag=2;  % response time out
+%         end
+%     end
+%     
+%     vbl = Screen('Flip',window);
+%     
+%     if keyCode(escKey)
+%         exit_flag = 1;
+%     end
+%     %
+%     if exit_flag
+%         break;
+%     end
+%     
+%     
+%     if flag == 1
+%         if keyCode(LeftKey)
+%             resp = 0;
+%         elseif keyCode(RightKey)
+%             resp = 1;
+%         end
+%         
+%         if resp ~= practice_table.tid(p)
+%             makeBeep(750, 0.25);
+%         end
+%         
+%     elseif flag == 2
+%         makeBeep(750,0.25);
+%     end
+%     
+%     
+%     
+%     Screen('Flip',window);
+%     
+%     if exit_flag
+%         break;
+%     end
+%     
+%     
+% end
 
 %% END PRACTICE %%
 %%%%%%%%%%%%%%%%%
