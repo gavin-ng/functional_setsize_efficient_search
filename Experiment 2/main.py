@@ -11,20 +11,6 @@ resp: left = 0, right = 1
 
 turtles and tortoises were created using GIMP
 
-HSL values:
-    black turtle:
-        shell: 0, 0, 0
-        body: 50, 100, -40
-    black tortoise:
-        shell: 0, 0, 7
-        body: 50, 100, -40
-    green tortoise:
-        shell: 100, 50, -15
-        body: 30, 50, 0
-    green turtle:
-        shell: 100, 50, 0
-        body: 30, 50, 0
-
 
 """
 
@@ -78,7 +64,7 @@ trialdata_fname = 'FSS_Expt_2_' + str(sub_id) + '.csv'
 
 tilt = 20
 jitter = 15
-xcells = 8 
+xcells = 8
 ycells = 8
 search_grid = grid.square_grid(1024, 768, xcells, ycells)
 trial_timer = core.Clock()
@@ -91,7 +77,7 @@ stimuli_allowed = int(xcells*ycells)
 beep = sound.Sound(value = "C",sampleRate=44100, secs=0.2, octave=5)
 
 # create window
-window = visual.Window([1024, 768], monitor="261", units="pix", fullscr=True)
+window = visual.Window([1024, 768], monitor="261", units="pix", color=[-1,-1,-1], fullscr=True)
 window.mouseVisible = False
 
 
@@ -99,7 +85,7 @@ window.mouseVisible = False
 turtle_black = visual.ImageStim(window, 'turtle_black.png', autoLog=False)
 turtle_green = visual.ImageStim(window, 'turtle_green.png', autoLog=False)
 tortoise_black = visual.ImageStim(window, 'tortoise_black.png', autoLog=False)
-tortoise_green = visual.ImageStim(window, 'tortoise_green.png', autoLog=False)
+#tortoise_green = visual.ImageStim(window, 'tortoise_green.png', autoLog=False)
 
 # import backgrounds
 water_top = visual.ImageStim(window, 'water_top_sand_bot.png', autoLog=False)
@@ -107,8 +93,8 @@ sand_top = visual.ImageStim(window, 'sand_top_water_bot.png', autoLog=False)
 
 
 # fixation crosses
-fix_hori = visual.Line(window, (-15, 0), (15, 0), lineColor='black')
-fix_vert = visual.Line(window, (0, -15), (0, 15), lineColor='black')
+fix_hori = visual.Line(window, (-15, 0), (15, 0), lineColor='white')
+fix_vert = visual.Line(window, (0, -15), (0, 15), lineColor='white')
 
 
 ## Timing definitions
@@ -117,11 +103,10 @@ fix_vert = visual.Line(window, (0, -15), (0, 15), lineColor='black')
 frame_rate = window.getActualFrameRate()
 resp_time = 0.001
 break_time = 1
-fix_frames_min = 1
-fix_frames_max = 2
-resp_frames = 1
+fix_min = 0.001
+fix_max = 0.002
 iti_min = 0.001
-iti_max = 0.001
+iti_max = 0.002
 timer = core.Clock()
 check_timer = core.Clock()
 check_interval = 0.6 * (1/frame_rate)
@@ -130,11 +115,10 @@ check_interval = 0.6 * (1/frame_rate)
 frame_rate = window.getActualFrameRate()
 resp_time = 2.5
 break_time = 30
-fix_frames_min = int(0.5*frame_rate)
-fix_frames_max = int(0.8*frame_rate)
-resp_frames = int(resp_time*frame_rate)
-iti_min = 1.4
-iti_max = 1.6
+fix_min = 0.8
+fix_max = 1
+iti_min = 1
+iti_max = 1.2
 timer = core.Clock()
 check_timer = core.Clock()
 check_interval = 0.6 * (1/frame_rate)
@@ -148,7 +132,7 @@ list_check_keys = ['space']
 #### Experiment design #####
 ############################
 
-num_blocks = 22
+num_blocks = 24
 trials_per_block = 32
 total_trials = num_blocks * trials_per_block
 total_practice_trials = 8
@@ -201,19 +185,19 @@ instructions_start = 'We have come to the end of the practice section. \n\n' +\
 instructions_end = 'We have come to the end of the experiment. \n\n' +\
     'Thank you for your participation! You may leave the room now. \n\n'
 
-inst_1 = visual.TextStim(window, instructions_1, pos=(0.0, 0.0), color=(-1.0, -1.0, -1.0), 
+inst_1 = visual.TextStim(window, instructions_1, pos=(0.0, 0.0), color=(1.0, 1.0, 1.0), 
                          alignHoriz='center', alignVert='center',wrapWidth=600.0, height=24.0)
-inst_2 = visual.TextStim(window, instructions_2, pos=(0.0, 0.0), color=(-1.0, -1.0, -1.0), 
+inst_2 = visual.TextStim(window, instructions_2, pos=(0.0, 0.0), color=(1.0, 1.0, 1.0), 
                          alignHoriz='center', alignVert='center',wrapWidth=600.0, height=24.0)
-inst_3 = visual.TextStim(window, instructions_3, pos=(0.0, 0.0), color=(-1.0, -1.0, -1.0), 
+inst_3 = visual.TextStim(window, instructions_3, pos=(0.0, 0.0), color=(1.0, 1.0, 1.0), 
                          alignHoriz='center', alignVert='center',wrapWidth=600.0, height=24.0)
-inst_break = visual.TextStim(window, instructions_break, pos=(0.0, 0.0), color=(-1.0, -1.0, -1.0), 
+inst_break = visual.TextStim(window, instructions_break, pos=(0.0, 0.0), color=(1.0, 1.0, 1.0), 
                          alignHoriz='center', alignVert='center',wrapWidth=600.0, height=24.0)
-inst_pract = visual.TextStim(window, instructions_practice, pos=(0.0, 0.0), color=(-1.0, -1.0, -1.0), 
+inst_pract = visual.TextStim(window, instructions_practice, pos=(0.0, 0.0), color=(1.0, 1.0, 1.0), 
                          alignHoriz='center', alignVert='center',wrapWidth=600.0, height=24.0)
-inst_start = visual.TextStim(window, instructions_start, pos=(0.0, 0.0), color=(-1.0, -1.0, -1.0), 
+inst_start = visual.TextStim(window, instructions_start, pos=(0.0, 0.0), color=(1.0, 1.0, 1.0), 
                          alignHoriz='center', alignVert='center',wrapWidth=600.0, height=24.0)
-inst_end = visual.TextStim(window, instructions_end, pos=(0.0, 0.0), color=(-1.0, -1.0, -1.0), 
+inst_end = visual.TextStim(window, instructions_end, pos=(0.0, 0.0), color=(1.0, 1.0, 1.0), 
                          alignHoriz='center', alignVert='center',wrapWidth=600.0, height=24.0)
 
 #########################
@@ -283,16 +267,18 @@ for t in range(total_practice_trials):
     target_ids = [0]*int(total_practice_trials/2) + [180]*int(total_practice_trials/2)
     random.shuffle(target_ids)
     
-    fix_frames = random.sample(range(fix_frames_min, fix_frames_max+1), 1)
-    fix_frames = fix_frames[0]
+#    fix_frames = random.sample(range(fix_min, fix_max+1), 1)
+ #   fix_frames = fix_frames[0]
+    fix_duration = random.uniform(fix_min, fix_max)
     iti = random.uniform(iti_min, iti_max)
     
     practice_trial = next(practice_trials)
     
-    for frame in range(fix_frames):
-        fix_hori.draw()
-        fix_vert.draw()
-        window.flip()
+  #  for frame in range(fix_frames):
+    fix_hori.draw()
+    fix_vert.draw()
+    window.flip()
+    core.wait(fix_duration)
         
     tortoise_setsize = practice_trial['tortoises']
     turtle_setsize = practice_trial['turtles']
@@ -403,9 +389,9 @@ for t in range(total_practice_trials):
         core.quit()
         window.close()
             
-    # present ITI
-    for frame in range(fix_frames):
-            window.flip(clearBuffer=True)
+    window.flip(clearBuffer=True)
+    window.flip(clearBuffer=True)
+    core.wait(iti)
         
         
 #### Start actual experiment
@@ -430,17 +416,16 @@ for block in range(num_blocks):
     for t in range(trials_per_block):
         window.flip()
         event.clearEvents()
-        fix_frames = random.sample(range(fix_frames_min, fix_frames_max+1), 1)
-        fix_frames = fix_frames[0]
+        fix_duration = random.uniform(fix_min, fix_max)
         iti = random.uniform(iti_min, iti_max)
 
         
         trial = next(trials)
 
-        for frame in range(fix_frames):
-            fix_hori.draw()
-            fix_vert.draw()
-            window.flip()
+        fix_hori.draw()
+        fix_vert.draw()
+        window.flip()
+        core.wait(fix_duration)
                 
         tortoise_setsize = trial['tortoises']
         turtle_setsize = trial['turtles']
@@ -561,15 +546,19 @@ for block in range(num_blocks):
         trials.addData('resp', resp)
         trials.addData('hit', hit)
         trials.addData('block', block)
+        trials.addData('iti', iti)
+        trials.addData('fix_duration', fix_duration)
         logging.console.setLevel(logging.WARNING)
 
         # present ITI
-        for frame in range(fix_frames):
-            window.flip()
     
-    ## Rest after every 2 blocks (64 trials)
+        window.flip(clearBuffer=True)
+        window.flip(clearBuffer=True)
+        core.wait(iti)
     
-    if block != num_blocks-1 and block % 2 == 1:
+    ## Rest after every 3 blocks (96 trials)
+    
+    if block+1 != num_blocks and (block+1) % 3 == 0:
         inst_break.draw()
         window.flip()
         break_clock = core.Clock()
