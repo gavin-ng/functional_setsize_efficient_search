@@ -7,6 +7,29 @@ library(ez)
 library(broom)
 library(BayesFactor)
 
+
+# for making ticks on axes
+number_ticks <- function(n) {function(limits) pretty(limits, n)}
+
+every_nth <- function(x, nth, empty = TRUE, inverse = FALSE) 
+{
+  if (!inverse) {
+    if(empty) {
+      x[1:nth == 1] <- ""
+      x
+    } else {
+      x[1:nth != 1]
+    }
+  } else {
+    if(empty) {
+      x[1:nth != 1] <- ""
+      x
+    } else {
+      x[1:nth == 1]
+    }
+  }
+}
+
 all_data <- read.csv("all.csv", header=TRUE)
 all_data$RT <- as.numeric(as.character(all_data$RT))
 
@@ -110,11 +133,39 @@ ggplot(summary_df, aes(x=fish_setsize, y=meanRT, color=bird_setsize)) +
   # geom_line() +
   stat_smooth(method="lm", formula=y~log(x), se=FALSE, linetype=1, size=1) +
   scale_color_manual(values=c('#8B0000', '#FF0000', '#FF9100', "#FFE600")) +
-  xlab("Fish set size") +
+  xlab("Set size \n (Consistent region)") +
   ylab("RT(ms)") +
-  labs(color="Bird set size")
+  labs(color="Set size\n(Target-inconsistent region)") + 
+  scale_y_continuous(limits = c(550, 650),
+                     breaks=seq(550, 650, 25),
+                     labels = every_nth(seq(550, 650, 25), 1, inverse=TRUE)) +  labs(color="Distractor type") + 
+  theme(axis.text.x = element_text(size=16),
+        axis.text.y = element_text(size=16),
+        axis.title.x = element_text(size=16),
+        axis.title.y = element_text(size=16)) +
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black")) +
+  theme(legend.position = "none")
+  theme(legend.text=element_text(size=16))
+
   
-  
+
+summary_df$fish_setsize <- as.factor(summary_df$fish_setsize)
+summary_df$bird_setsize <- as.numeric(summary_df$bird_setsize)
+
+ggplot(summary_df, aes(x=bird_setsize, y=meanRT, color=fish_setsize)) +
+  geom_point(size = 3) +
+  geom_errorbar(aes(ymin=meanRT-SD, ymax=meanRT+SD), width=.5) + 
+  # geom_line() +
+  stat_smooth(method="lm", formula=y~log(x), se=FALSE, linetype=1, size=1) +
+  scale_color_manual(values=c('#8B0000', '#FF0000', '#FF9100', "#FFE600")) +
+  xlab("Set size \n (Target-consistent region)") +
+  ylab("RT(ms)") +
+  labs(color="Set size\n(Target-inconsistent region)") + 
+  theme(axis.text.x = element_text(size=13),
+        axis.text.y = element_text(size=14),
+        axis.title.x = element_text(size=14),
+        axis.title.y = element_text(size=14))
   
 
 #### analysis by tloc
@@ -128,6 +179,19 @@ tloc_df <- clean_df %>%
 ggplot(tloc_df, aes(x=x, y=y, size=RT, color=RT)) +
   geom_point() + 
   geom_text(aes(label=roundedRT), hjust=0.5, vjust=2, size=4) +
-  coord_cartesian(y = c(-10.5, -6.5), x = c(0.5, 10.5)) 
+  coord_cartesian(y = c(-10.5, -6.5), x = c(0.5, 10.5)) +
+  scale_colour_gradient(low = "#00a553", high = "red",
+                        space = "Lab", na.value = "grey50", guide = "colourbar",
+                        aesthetics = "colour") +
+  theme(axis.text.x = element_text(size=13),
+        axis.text.y = element_text(size=14),
+        axis.title.x = element_text(size=14),
+        axis.title.y = element_text(size=14)) +
+  theme_bw() +
+  theme(legend.position="none")
+
+
+  theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.background = element_blank(), axis.line = element_line(colour = "black"))
 
 

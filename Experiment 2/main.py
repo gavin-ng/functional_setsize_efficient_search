@@ -350,8 +350,7 @@ for t in range(total_practice_trials):
     turtle_green.draw()
             
     window.flip(clearBuffer=False)
-    
-    
+
     ## Get response
     rt_clock = core.Clock()
     displayed = True
