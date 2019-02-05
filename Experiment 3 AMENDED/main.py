@@ -2,7 +2,7 @@
 """
 Spyder Editor
 
-Experiment 2 from the functional set size project
+Experiment 3 from the functional set size project
 See https://osf.io/bph4a/
 
 
@@ -36,7 +36,7 @@ info_2 ={'Age': '',
          'Preferred Hand': ['Right', 'Left']}
              
 exptDlg = gui.DlgFromDict(dictionary=info_1,
-        title='FSS_Experiment_2', fixed=['ExpVersion'])
+        title='FSS_Experiment_3', fixed=['ExpVersion'])
 
 if exptDlg.OK:
     pass
@@ -44,7 +44,7 @@ else:
     print('User Cancelled')
     
 exptDlg = gui.DlgFromDict(dictionary=info_2,
-        title='FSS_Experiment_2', fixed=['ExpVersion'])    
+        title='FSS_Experiment_3_a', fixed=['ExpVersion'])    
 
 if exptDlg.OK:
     pass
@@ -55,7 +55,7 @@ info_1.update(info_2) #combine dictionaries
    
     
 sub_id = info_1['Subject Number']
-trialdata_fname = 'FSS_Expt_2_' + str(sub_id) + '.csv'
+trialdata_fname = 'FSS_Expt_3_amended_' + str(sub_id) + '.csv'
 
 
 ###########################
@@ -77,7 +77,7 @@ stimuli_allowed = int(xcells*ycells)
 beep = sound.Sound(value = "C",sampleRate=44100, secs=0.2, octave=5)
 
 # create window
-window = visual.Window([1024, 768], monitor="261", units="pix", color=[-1,-1,-1], fullscr=False)
+window = visual.Window([1024, 768], monitor="261", units="pix", color=[-1,-1,-1], fullscr=True)
 window.mouseVisible = False
 
 
@@ -160,6 +160,7 @@ practice_trials = data.TrialHandler(random.sample(conditions_list, total_practic
 instructions_1 = 'Welcome! \n\n' +\
     'You will be searching for a green turtle in a scene of black turtles and black tortoises. \n\n' +\
     'Turtles will always be in the sea, while tortoises will always be on land. \n\n' +\
+    'However, the green turtle will always be on land \n\n' +\
     'Your task is to decide which direction the turtle is facing. \n\n' +\
     'You will see examples of the turtle on the following screens.' 
 
@@ -287,15 +288,16 @@ for t in range(total_practice_trials):
 
     if bg == 0: #sand on top
         sand_top.draw()
-        tortoise_locs = random.sample(range(turtles_allowed, stimuli_allowed), tortoise_setsize)
-        target_loc = random.sample(range(0,turtles_allowed), 1)
-        turtle_locs = random.sample(list(set(range(0,turtles_allowed)) - set(target_loc)), turtle_setsize)
+        target_loc = random.sample(range(turtles_allowed,stimuli_allowed), 1)
+        turtle_locs = random.sample(range(0, turtles_allowed), turtle_setsize)
+        tortoise_locs = random.sample(list(set(range(turtles_allowed, stimuli_allowed)) - set(target_loc)), tortoise_setsize)
             
     elif bg == 1: #water on top
-        water_top.draw()
-        tortoise_locs = random.sample(range(0,turtles_allowed), tortoise_setsize)
-        target_loc = random.sample(range(turtles_allowed,stimuli_allowed), 1)
-        turtle_locs = random.sample(list(set(range(turtles_allowed,stimuli_allowed)) - set(target_loc)), turtle_setsize)
+        water_top.draw()        
+        target_loc = random.sample(range(0,turtles_allowed), 1)
+        tortoise_locs = random.sample(list(set(range(0, turtles_allowed)) - set(target_loc)), tortoise_setsize)    
+        turtle_locs = random.sample(range(turtles_allowed, stimuli_allowed), turtle_setsize)
+
     
     orientations = []
     all_locs = []
@@ -350,7 +352,13 @@ for t in range(total_practice_trials):
     turtle_green.draw()
             
     window.flip(clearBuffer=False)
-
+    
+        
+    # save screenshots
+    #window.getMovieFrame()
+    #window.saveMovieFrames('screenshot' + str(t) + '.png')
+    
+    
     ## Get response
     rt_clock = core.Clock()
     displayed = True
@@ -433,16 +441,16 @@ for block in range(num_blocks):
            
         if bg == 0: #sand on top
             sand_top.draw()
-            tortoise_locs = random.sample(range(turtles_allowed, stimuli_allowed), tortoise_setsize)
-            target_loc = random.sample(range(0,turtles_allowed), 1)
-            turtle_locs = random.sample(list(set(range(0,turtles_allowed)) - set(target_loc)), turtle_setsize)
+            target_loc = random.sample(range(turtles_allowed,stimuli_allowed), 1)
+            turtle_locs = random.sample(range(0, turtles_allowed), turtle_setsize)
+            tortoise_locs = random.sample(list(set(range(turtles_allowed, stimuli_allowed)) - set(target_loc)), tortoise_setsize)
             
         elif bg == 1: #water on top
-            water_top.draw()
-            tortoise_locs = random.sample(range(0,turtles_allowed), tortoise_setsize)
-            target_loc = random.sample(range(turtles_allowed,stimuli_allowed), 1)
-            turtle_locs = random.sample(list(set(range(turtles_allowed,stimuli_allowed)) - set(target_loc)), turtle_setsize)
-        
+            water_top.draw()        
+            target_loc = random.sample(range(0,turtles_allowed), 1)
+            tortoise_locs = random.sample(list(set(range(0, turtles_allowed)) - set(target_loc)), tortoise_setsize)    
+            turtle_locs = random.sample(range(turtles_allowed, stimuli_allowed), turtle_setsize)
+
         orientations = []
         all_locs = []
         # draw stimuli
@@ -547,6 +555,7 @@ for block in range(num_blocks):
         trials.addData('block', block)
         trials.addData('iti', iti)
         trials.addData('fix_duration', fix_duration)
+        trials.addData('target_loc', target_loc)
         logging.console.setLevel(logging.WARNING)
 
         # present ITI
